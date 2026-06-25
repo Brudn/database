@@ -1,1 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warning System</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #050505;
+      color: #00ff66;
+      font-family: Consolas, Monaco, monospace;
+      overflow: hidden;
+    }
+
+    .scanline {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 102, 0.04),
+        rgba(0, 255, 102, 0.04) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+    }
+
+    .screen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    #warningBox {
+      animation: flicker 0.9s infinite;
+    }
+
+    #warningBox h1 {
+      margin: 0;
+      color: #ff2b2b;
+      font-size: clamp(42px, 10vw, 110px);
+      letter-spacing: 10px;
+      text-shadow: 0 0 10px #ff0000, 0 0 30px #ff0000;
+    }
+
+    #warningBox p {
+      color: #ffffff;
+      font-size: 16px;
+      margin-top: 18px;
+    }
+
+    #searchBox {
+      display: none;
+      width: min(600px, 100%);
+    }
+
+    #searchBox h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      background: #000;
+      border: 1px solid #00ff66;
+      color: #00ff66;
+      outline: none;
+      font-family: inherit;
+      font-size: 18px;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+    }
+
+    .hint {
+      color: #a0a0a0;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    #result {
+      display: none;
+      width: min(650px, 100%);
+      text-align: left;
+      border: 1px solid #00ff66;
+      background: rgba(0, 20, 8, 0.9);
+      padding: 24px;
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.25);
+    }
+
+    #result h2 {
+      margin-top: 0;
+      color: #ffffff;
+      border-bottom: 1px solid #00ff66;
+      padding-bottom: 12px;
+    }
+
+    .data-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 10px;
+      margin: 12px 0;
+      word-break: break-word;
+    }
+
+    .label {
+      color: #a0a0a0;
+    }
+
+    .not-found {
+      color: #ff5252;
+      text-align: center;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scanline"></div>
+
+  <main class="screen">
+    <section id="warningBox">
+      <h1>WARNING</h1>
+      <p>SYSTEM ACCESS DETECTED...</p>
+    </section>
+
+    <section id="searchBox">
+      <h2>&gt; Masukkan nama untuk mencari profil</h2>
+
+      <input
+        id="nameInput"
+        type="text"
+        placeholder="Ketik nama, lalu tekan Enter..."
+        autocomplete="off"
+      />
+
+      <p class="hint">Contoh: andi, siti, budi</p>
+    </section>
+
+    <section id="result"></section>
+  </main>
+
+  <script>
+    // Data contoh/fiktif. Ganti sesuai kebutuhan dan izin penggunaan data.
+    const database = {
+      andi: {
+        nama: "Andi Pratama",
+        umur: "22 tahun",
+        kota: "Surabaya",
+        pekerjaan: "Mahasiswa",
+        hobi: "Pemrograman dan desain"
+      },
+      siti: {
+        nama: "Siti Aisyah",
+        umur: "24 tahun",
+        kota: "Malang",
+        pekerjaan: "Desainer grafis",
+        hobi: "Fotografi"
+      },
+      budi: {
+        nama: "Budi Santoso",
+        umur: "28 tahun",
+        kota: "Jakarta",
+        pekerjaan: "Web developer",
+        hobi: "Game dan musik"
+      }
+    };
+
+    const warningBox = document.getElementById("warningBox");
+    const searchBox = document.getElementById("searchBox");
+    const result = document.getElementById("result");
+    const nameInput = document.getElementById("nameInput");
+
+    // Durasi tampilan WARNING: 3 detik
+    setTimeout(() => {
+      warningBox.style.display = "none";
+      searchBox.style.display = "block";
+      nameInput.focus();
+    }, 3000);
+
+    nameInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        const keyword = nameInput.value.trim().toLowerCase();
+
+        if (!keyword) return;
+
+        searchBox.style.display = "none";
+        result.style.display = "block";
+
+        if (database[keyword]) {
+          const orang = database[keyword];
+
+          result.innerHTML = `
+            <h2>&gt; DATA DITEMUKAN</h2>
+            <div class="data-row">
+              <span class="label">Nama</span>
+              <span>: ${orang.nama}</span>
+            </div>
+            <div class="data-row">
+              <span class="label">Umur</span>
+              <span>: ${orang.umur}</span>
+            </div>
+            <div class="data-row">
+              <span class="label">Kota</span>
+              <span>: ${orang.kota}</span>
+            </div>
+            <div class="data-row">
+              <span class="label">Pekerjaan</span>
+              <span>: ${orang.pekerjaan}</span>
+            </div>
+            <div class="data-row">
+              <span class="label">Hobi</span>
+              <span>: ${orang.hobi}</span>
+            </div>
+            <br>
+            <p class="hint">Tekan F5 untuk mencari kembali.</p>
+          `;
+        } else {
+          result.innerHTML = `
+            <h2 class="not-found">DATA TIDAK DITEMUKAN</h2>
+            <p class="not-found">
+              Nama "${nameInput.value}" tidak ada di database contoh.
+            </p>
+            <p class="hint">Tekan F5 untuk mencoba lagi.</p>
+          `;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
