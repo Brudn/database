@@ -13,20 +13,41 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: #050505;
       color: #00ff66;
       font-family: Consolas, Monaco, monospace;
       overflow: hidden;
+      background: #000;
     }
 
+    /* VIDEO BACKGROUND */
+    #videoBackground {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -3;
+    }
+
+    /* Lapisan gelap supaya tulisan tetap terbaca */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: -2;
+    }
+
+    /* Efek garis layar terminal */
     .scanline {
       position: fixed;
       inset: 0;
       pointer-events: none;
+      z-index: -1;
       background: repeating-linear-gradient(
         0deg,
-        rgba(0, 255, 102, 0.04),
-        rgba(0, 255, 102, 0.04) 1px,
+        rgba(0, 255, 102, 0.05),
+        rgba(0, 255, 102, 0.05) 1px,
         transparent 1px,
         transparent 4px
       );
@@ -54,7 +75,7 @@
     }
 
     #warningBox p {
-      color: #ffffff;
+      color: white;
       font-size: 16px;
       margin-top: 18px;
     }
@@ -67,22 +88,23 @@
     #searchBox h2 {
       font-size: 24px;
       margin-bottom: 20px;
+      text-shadow: 0 0 10px #00ff66;
     }
 
     input {
       width: 100%;
       padding: 16px;
-      background: #000;
+      background: rgba(0, 0, 0, 0.8);
       border: 1px solid #00ff66;
       color: #00ff66;
       outline: none;
       font-family: inherit;
       font-size: 18px;
-      box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
     }
 
     .hint {
-      color: #a0a0a0;
+      color: #d0d0d0;
       font-size: 13px;
       margin-top: 12px;
     }
@@ -92,14 +114,14 @@
       width: min(650px, 100%);
       text-align: left;
       border: 1px solid #00ff66;
-      background: rgba(0, 20, 8, 0.9);
+      background: rgba(0, 15, 5, 0.88);
       padding: 24px;
-      box-shadow: 0 0 20px rgba(0, 255, 102, 0.25);
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
     }
 
     #result h2 {
       margin-top: 0;
-      color: #ffffff;
+      color: white;
       border-bottom: 1px solid #00ff66;
       padding-bottom: 12px;
     }
@@ -122,13 +144,24 @@
     }
 
     @keyframes flicker {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.55; }
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.55;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- Ganti background.mp4 dengan nama file video Anda -->
+  <video id="videoBackground" autoplay muted loop playsinline>
+    <source src="yut.mp4" type="video/mp4">
+    Browser Anda tidak mendukung video background.
+  </video>
+
+  <div class="overlay"></div>
   <div class="scanline"></div>
 
   <main class="screen">
@@ -154,7 +187,6 @@
   </main>
 
   <script>
-    // Data contoh/fiktif. Ganti sesuai kebutuhan dan izin penggunaan data.
     const database = {
       andi: {
         nama: "Andi Pratama",
@@ -184,7 +216,6 @@
     const result = document.getElementById("result");
     const nameInput = document.getElementById("nameInput");
 
-    // Durasi tampilan WARNING: 3 detik
     setTimeout(() => {
       warningBox.style.display = "none";
       searchBox.style.display = "block";
@@ -192,51 +223,56 @@
     }, 3000);
 
     nameInput.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        const keyword = nameInput.value.trim().toLowerCase();
+      if (event.key !== "Enter") return;
 
-        if (!keyword) return;
+      const keyword = nameInput.value.trim().toLowerCase();
 
-        searchBox.style.display = "none";
-        result.style.display = "block";
+      if (!keyword) return;
 
-        if (database[keyword]) {
-          const orang = database[keyword];
+      searchBox.style.display = "none";
+      result.style.display = "block";
 
-          result.innerHTML = `
-            <h2>&gt; DATA DITEMUKAN</h2>
-            <div class="data-row">
-              <span class="label">Nama</span>
-              <span>: ${orang.nama}</span>
-            </div>
-            <div class="data-row">
-              <span class="label">Umur</span>
-              <span>: ${orang.umur}</span>
-            </div>
-            <div class="data-row">
-              <span class="label">Kota</span>
-              <span>: ${orang.kota}</span>
-            </div>
-            <div class="data-row">
-              <span class="label">Pekerjaan</span>
-              <span>: ${orang.pekerjaan}</span>
-            </div>
-            <div class="data-row">
-              <span class="label">Hobi</span>
-              <span>: ${orang.hobi}</span>
-            </div>
-            <br>
-            <p class="hint">Tekan F5 untuk mencari kembali.</p>
-          `;
-        } else {
-          result.innerHTML = `
-            <h2 class="not-found">DATA TIDAK DITEMUKAN</h2>
-            <p class="not-found">
-              Nama "${nameInput.value}" tidak ada di database contoh.
-            </p>
-            <p class="hint">Tekan F5 untuk mencoba lagi.</p>
-          `;
-        }
+      if (database[keyword]) {
+        const orang = database[keyword];
+
+        result.innerHTML = `
+          <h2>&gt; DATA DITEMUKAN</h2>
+
+          <div class="data-row">
+            <span class="label">Nama</span>
+            <span>: ${orang.nama}</span>
+          </div>
+
+          <div class="data-row">
+            <span class="label">Umur</span>
+            <span>: ${orang.umur}</span>
+          </div>
+
+          <div class="data-row">
+            <span class="label">Kota</span>
+            <span>: ${orang.kota}</span>
+          </div>
+
+          <div class="data-row">
+            <span class="label">Pekerjaan</span>
+            <span>: ${orang.pekerjaan}</span>
+          </div>
+
+          <div class="data-row">
+            <span class="label">Hobi</span>
+            <span>: ${orang.hobi}</span>
+          </div>
+
+          <p class="hint">Tekan F5 untuk mencari kembali.</p>
+        `;
+      } else {
+        result.innerHTML = `
+          <h2 class="not-found">DATA TIDAK DITEMUKAN</h2>
+          <p class="not-found">
+            Nama "${nameInput.value}" tidak ada di database contoh.
+          </p>
+          <p class="hint">Tekan F5 untuk mencoba lagi.</p>
+        `;
       }
     });
   </script>
