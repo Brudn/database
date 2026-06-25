@@ -16,9 +16,10 @@
       background: #000;
       color: #00ff66;
       font-family: Consolas, Monaco, monospace;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
+    /* Video background */
     #videoBackground {
       position: fixed;
       inset: 0;
@@ -28,13 +29,15 @@
       z-index: -3;
     }
 
+    /* Lapisan gelap */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0, 0, 0, 0.52);
       z-index: -2;
     }
 
+    /* Garis layar */
     .scanline {
       position: fixed;
       inset: 0;
@@ -49,76 +52,113 @@
       );
     }
 
+    /* Posisi semua konten di tengah */
     .screen {
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding: 10vh 20px 20px;
+      align-items: center;
+      padding: 20px;
       text-align: center;
     }
 
+    /* Naik sedikit dari tengah layar */
     .mainBox {
-      width: min(650px, 100%);
+      width: min(620px, 90%);
+      transform: translateY(-4vh);
     }
 
+    /* WARNING */
     #warningBox {
+      margin-bottom: 18px;
       animation: flicker 0.9s infinite;
-      margin-bottom: 28px;
     }
 
     #warningBox h1 {
       margin: 0;
       color: #ff2b2b;
-      font-size: clamp(42px, 10vw, 110px);
-      letter-spacing: 10px;
-      text-shadow: 0 0 10px #ff0000, 0 0 30px #ff0000;
+      font-size: clamp(36px, 6vw, 72px);
+      letter-spacing: 7px;
+      text-shadow: 0 0 10px #ff0000, 0 0 25px #ff0000;
     }
 
     #warningBox p {
-      color: white;
-      font-size: 16px;
-      margin-top: 18px;
+      color: #ffffff;
+      font-size: 14px;
+      margin: 10px 0 0;
     }
 
+    /* Kolom pencarian */
     #searchBox {
       width: 100%;
     }
 
     input {
       width: 100%;
-      padding: 16px;
-      background: rgba(0, 0, 0, 0.8);
+      padding: 13px 16px;
+      background: rgba(0, 0, 0, 0.82);
       border: 1px solid #00ff66;
       color: #00ff66;
       outline: none;
-      font-family: inherit;
-      font-size: 18px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 16px;
       box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+    }
+
+    input::placeholder {
+      color: #8b8b8b;
     }
 
     .hint {
       color: #d0d0d0;
-      font-size: 13px;
-      margin-top: 12px;
+      font-size: 12px;
+      margin-top: 10px;
     }
 
+    /* Kotak hasil biodata */
     #result {
       display: none;
       width: 100%;
       text-align: left;
       border: 1px solid #00ff66;
-      background: rgba(0, 15, 5, 0.88);
-      padding: 24px;
-      margin-top: 28px;
+      background: rgba(0, 15, 5, 0.9);
+      padding: 20px;
+      margin-top: 22px;
       box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+    }
+
+    #result h2 {
+      margin: 0 0 16px;
+      color: #00ff66;
+      font-size: 17px;
+    }
+
+    /* Biodata dan foto berdampingan */
+    .result-content {
+      display: flex;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .result-bio {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .result-photo {
+      width: 180px;
+      object-fit: cover;
+      border: 1px solid #00ff66;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.35);
     }
 
     .data-row {
       display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 10px;
-      margin: 12px 0;
+      grid-template-columns: 95px 1fr;
+      gap: 8px;
+      margin: 10px 0;
+      font-size: 13px;
+      word-break: break-word;
     }
 
     .label {
@@ -131,96 +171,40 @@
     }
 
     @keyframes flicker {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.55; }
+      0%, 100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.62;
+      }
     }
-    .screen {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  text-align: center;
-}
 
-.mainBox {
-  width: min(520px, 90%);
-  transform: translateY(-4vh);
-}
+    /* Tampilan HP */
+    @media (max-width: 600px) {
+      .mainBox {
+        width: min(92%, 620px);
+        transform: translateY(-2vh);
+      }
 
-#warningBox {
-  margin-bottom: 20px;
-  animation: flicker 0.9s infinite;
-}
+      .result-content {
+        flex-direction: column;
+      }
 
-#warningBox h1 {
-  margin: 0;
-  color: #ff2b2b;
-  font-size: clamp(36px, 6vw, 72px);
-  letter-spacing: 7px;
-  text-shadow: 0 0 10px #ff0000, 0 0 25px #ff0000;
-}
+      .result-photo {
+        width: 100%;
+        height: 260px;
+      }
 
-#warningBox p {
-  color: white;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-#searchBox {
-  width: 100%;
-}
-
-input {
-  width: 100%;
-  padding: 13px 16px;
-  background: rgba(0, 0, 0, 0.8);
-  border: 1px solid #00ff66;
-  color: #00ff66;
-  outline: none;
-  font-family: Consolas, Monaco, monospace;
-  font-size: 16px;
-  box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
-}
-
-.hint {
-  color: #d0d0d0;
-  font-size: 12px;
-  margin-top: 10px;
-}
-  .result-content {
-  display: flex;
-  gap: 18px;
-  align-items: stretch;
-}
-
-.result-bio {
-  flex: 1;
-  min-width: 0;
-}
-
-.result-photo {
-  width: 180px;
-  object-fit: cover;
-  border: 1px solid #00ff66;
-  box-shadow: 0 0 15px rgba(0, 255, 102, 0.35);
-}
-
-@media (max-width: 600px) {
-  .result-content {
-    flex-direction: column;
-  }
-
-  .result-photo {
-    width: 100%;
-    height: 260px;
-  }
-}
+      .data-row {
+        grid-template-columns: 85px 1fr;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <!-- UBAH nama file ini sesuai nama MP4 Anda -->
+  <!-- Background video -->
   <video id="videoBackground" autoplay muted loop playsinline>
     <source src="yut.mp4" type="video/mp4">
   </video>
@@ -250,27 +234,37 @@ input {
   </main>
 
   <script>
+    /*
+      Tambahkan nama baru di bagian database ini.
+      Kata di kiri, misalnya "udin", adalah yang diketik di pencarian.
+      File foto harus sudah di-upload ke repository.
+    */
     const database = {
       udin: {
         nama: "Udin Pratama",
         umur: "22 tahun",
         kota: "Surabaya",
         pekerjaan: "Mahasiswa",
-        hobi: "Pemrograman dan desain"
+        hobi: "Pemrograman dan desain",
+        foto: "her.jpg"
       },
+
+      andi: {
+        nama: "Andi Pratama",
+        umur: "22 tahun",
+        kota: "Surabaya",
+        pekerjaan: "Mahasiswa",
+        hobi: "Pemrograman dan desain",
+        foto: "andi.jpg"
+      },
+
       siti: {
         nama: "Siti Aisyah",
         umur: "24 tahun",
         kota: "Malang",
-        pekerjaan: "Desainer grafis",
-        hobi: "Fotografi"
-      },
-      budi: {
-        nama: "Budi Santoso",
-        umur: "28 tahun",
-        kota: "Jakarta",
-        pekerjaan: "Web Developer",
-        hobi: "Game dan musik"
+        pekerjaan: "Desainer Grafis",
+        hobi: "Fotografi",
+        foto: "siti.jpg"
       }
     };
 
@@ -283,6 +277,7 @@ input {
       if (event.key !== "Enter") return;
 
       const keyword = nameInput.value.trim().toLowerCase();
+
       if (!keyword) return;
 
       result.style.display = "block";
@@ -292,11 +287,41 @@ input {
 
         result.innerHTML = `
           <h2>&gt; DATA DITEMUKAN</h2>
-          <div class="data-row"><span class="label">Nama</span><span>: ${orang.nama}</span></div>
-          <div class="data-row"><span class="label">Umur</span><span>: ${orang.umur}</span></div>
-          <div class="data-row"><span class="label">Kota</span><span>: ${orang.kota}</span></div>
-          <div class="data-row"><span class="label">Pekerjaan</span><span>: ${orang.pekerjaan}</span></div>
-          <div class="data-row"><span class="label">Hobi</span><span>: ${orang.hobi}</span></div>
+
+          <div class="result-content">
+            <div class="result-bio">
+              <div class="data-row">
+                <span class="label">Nama</span>
+                <span>: ${orang.nama}</span>
+              </div>
+
+              <div class="data-row">
+                <span class="label">Umur</span>
+                <span>: ${orang.umur}</span>
+              </div>
+
+              <div class="data-row">
+                <span class="label">Kota</span>
+                <span>: ${orang.kota}</span>
+              </div>
+
+              <div class="data-row">
+                <span class="label">Pekerjaan</span>
+                <span>: ${orang.pekerjaan}</span>
+              </div>
+
+              <div class="data-row">
+                <span class="label">Hobi</span>
+                <span>: ${orang.hobi}</span>
+              </div>
+            </div>
+
+            <img
+              class="result-photo"
+              src="${orang.foto}"
+              alt="Foto ${orang.nama}"
+            >
+          </div>
         `;
       } else {
         result.innerHTML = `
